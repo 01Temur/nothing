@@ -3,6 +3,8 @@ import requests
 import pandas as pd
 import plotly.graph_objs as go
 
+[api]
+iex_key = "<your_iex_cloud_api_key>"
 API_KEY = st.secrets["api"]["iex_key"]
 API_BASE_URL = "https://cloud.iexapis.com/stable/"
 def get_stock_data(symbol, time_range="5y"):
