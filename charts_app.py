@@ -2,7 +2,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 
-# Streamlit app details
+# Streamlit app setup
 st.set_page_config(page_title="Financial Analysis", layout="wide")
 
 # Sidebar input
@@ -14,7 +14,7 @@ with st.sidebar:
 
 # Helper functions
 def format_value(value):
-    """Format large numbers into readable strings with suffixes."""
+    """Format large numbers into human-readable strings."""
     if value is None or not isinstance(value, (int, float)):
         return "N/A"
     suffixes = ["", "K", "M", "B", "T"]
@@ -25,7 +25,7 @@ def format_value(value):
     return f"${value:.1f}{suffixes[suffix_index]}"
 
 def safe_format(value, format_str="{:.2f}"):
-    """Safely format numbers and handle None or invalid data."""
+    """Safely format numbers and handle None or invalid values."""
     try:
         return format_str.format(float(value))
     except (TypeError, ValueError):
