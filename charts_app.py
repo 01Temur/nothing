@@ -105,11 +105,11 @@ if button:
                 
                 biz_metrics = [
                     ("Business Metrics", "Value"),
-                    ("EPS (FWD)", f"{forward_eps}"),
-                    ("P/E (FWD)", f"{forward_pe}"),
-                    ("PEG Ratio", f"{peg_ratio}"),
-                    ("Div Rate (FWD)", f"${dividend_rate}"),
-                    ("Div Yield (FWD)", f"{dividend_yield * 100}%"),
+                    ("EPS (FWD)", f"{forward_eps:.2f}"),
+                    ("P/E (FWD)", f"{forward_pe:.2f}"),
+                    ("PEG Ratio", f"{peg_ratio:.2f}"),
+                    ("Div Rate (FWD)", f"${dividend_rate:.2f}"),
+                    ("Div Yield (FWD)", f"{dividend_yield * 100:.2f}%"),
                     ("Recommendation", recommendation.capitalize())
                 ]
                 
