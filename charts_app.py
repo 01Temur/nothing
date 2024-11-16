@@ -31,73 +31,67 @@ def safe_format(value, format_str="{:.2f}"):
     except (TypeError, ValueError):
         return "N/A"
 
-# Main logic
-if button:
-    if not ticker.strip():
-        st.error("Please provide a valid stock ticker.")
-    else:
-        try:
-            with st.spinner("Fetching data, please wait..."):
-                # Retrieve stock data
-                stock = yf.Ticker(ticker)
-                info = stock.info
+# Tabs
+tab1, tab2 = st.tabs(["Stock Analysis", "Economic Calendar"])
 
-                st.subheader(f"{ticker.upper()} - {info.get('longName', 'N/A')}")
+# Tab 1: Stock Analysis
+with tab1:
+    st.markdown("### Stock Analysis")
+    if button:
+        if not ticker.strip():
+            st.error("Please provide a valid stock ticker.")
+        else:
+            try:
+                with st.spinner("Fetching data, please wait..."):
+                    # Retrieve stock data
+                    stock = yf.Ticker(ticker)
+                    info = stock.info
 
-                # Historical stock price data
-                interval_map = {
-                    "1D": ("1d", "1h"),
-                    "5D": ("5d", "1d"),
-                    "1M": ("1mo", "1d"),
-                    "6M": ("6mo", "1wk"),
-                    "YTD": ("ytd", "1mo"),
-                    "1Y": ("1y", "1mo"),
-                    "5Y": ("5y", "3mo"),
-                }
-                period_input, interval = interval_map.get(period, ("1mo", "1d"))
-                history = stock.history(period=period_input, interval=interval)
+                    st.subheader(f"{ticker.upper()} - {info.get('longName', 'N/A')}")
 
-                if not history.empty:
-                    chart_data = pd.DataFrame(history["Close"])
-                    st.line_chart(chart_data)
-                else:
-                    st.warning("No historical data available for the selected period.")
+                    # Historical stock price data
+                    interval_map = {
+                        "1D": ("1d", "1h"),
+                        "5D": ("5d", "1d"),
+                        "1M": ("1mo", "1d"),
+                        "6M": ("6mo", "1wk"),
+                        "YTD": ("ytd", "1mo"),
+                        "1Y": ("1y", "1mo"),
+                        "5Y": ("5y", "3mo"),
+                    }
+                    period_input, interval = interval_map.get(period, ("1mo", "1d"))
+                    history = stock.history(period=period_input, interval=interval)
 
-                # Display stock information
-                col1, col2, col3 = st.columns(3)
+                    if not history.empty:
+                        chart_data = pd.DataFrame(history["Close"])
+                        st.line_chart(chart_data)
+                    else:
+                        st.warning("No historical data available for the selected period.")
 
-                # Stock Info
-                stock_info = [
-                    ("Country", info.get("country", "N/A")),
-                    ("Sector", info.get("sector", "N/A")),
-                    ("Industry", info.get("industry", "N/A")),
-                    ("Market Cap", format_value(info.get("marketCap"))),
-                    ("Enterprise Value", format_value(info.get("enterpriseValue"))),
-                    ("Employees", info.get("fullTimeEmployees", "N/A")),
-                ]
-                col1.dataframe(pd.DataFrame(stock_info, columns=["Stock Info", "Value"]), width=400)
+                    # Stock Info
+                    stock_info = [
+                        ("Country", info.get("country", "N/A")),
+                        ("Sector", info.get("sector", "N/A")),
+                        ("Industry", info.get("industry", "N/A")),
+                        ("Market Cap", format_value(info.get("marketCap"))),
+                        ("Enterprise Value", format_value(info.get("enterpriseValue"))),
+                        ("Employees", info.get("fullTimeEmployees", "N/A")),
+                    ]
+                    st.table(pd.DataFrame(stock_info, columns=["Stock Info", "Value"]))
 
-                # Price Info
-                price_info = [
-                    ("Current Price", f"${safe_format(info.get('currentPrice'))}"),
-                    ("Previous Close", f"${safe_format(info.get('previousClose'))}"),
-                    ("Day High", f"${safe_format(info.get('dayHigh'))}"),
-                    ("Day Low", f"${safe_format(info.get('dayLow'))}"),
-                    ("52 Week High", f"${safe_format(info.get('fiftyTwoWeekHigh'))}"),
-                    ("52 Week Low", f"${safe_format(info.get('fiftyTwoWeekLow'))}"),
-                ]
-                col2.dataframe(pd.DataFrame(price_info, columns=["Price Info", "Value"]), width=400)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
 
-                # Business Metrics
-                biz_metrics = [
-                    ("EPS (FWD)", safe_format(info.get("forwardEps"))),
-                    ("P/E (FWD)", safe_format(info.get("forwardPE"))),
-                    ("PEG Ratio", safe_format(info.get("pegRatio"))),
-                    ("Dividend Rate (FWD)", f"${safe_format(info.get('dividendRate'))}"),
-                    ("Dividend Yield (FWD)", f"{safe_format(info.get('dividendYield', 0) * 100)}%"),
-                    ("Recommendation", info.get("recommendationKey", "N/A").capitalize()),
-                ]
-                col3.dataframe(pd.DataFrame(biz_metrics, columns=["Business Metrics", "Value"]), width=400)
-
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+# Tab 2: Economic Calendar
+with tab2:
+    st.markdown("### Economic Calendar")
+    st.write("This section can include details like upcoming economic events, indicators, and reports.")
+    
+    # Example: Placeholder for Economic Calendar data
+    calendar_data = [
+        {"Date": "2024-11-17", "Event": "US Retail Sales", "Impact": "High"},
+        {"Date": "2024-11-18", "Event": "UK Inflation Rate", "Impact": "Medium"},
+        {"Date": "2024-11-19", "Event": "FOMC Minutes Release", "Impact": "High"},
+    ]
+    df_calendar = pd.DataFrame(calendar_data)
+    st.table(df_calendar)
