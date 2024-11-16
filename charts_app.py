@@ -79,13 +79,24 @@ with tab1:
                     ]
                     st.table(pd.DataFrame(stock_info, columns=["Stock Info", "Value"]))
 
+                    # Business Metrics
+                    biz_metrics = [
+                        ("EPS (FWD)", safe_format(info.get("forwardEps"))),
+                        ("P/E (FWD)", safe_format(info.get("forwardPE"))),
+                        ("PEG Ratio", safe_format(info.get("pegRatio"))),
+                        ("Dividend Rate (FWD)", f"${safe_format(info.get('dividendRate'))}"),
+                        ("Dividend Yield (FWD)", f"{safe_format(info.get('dividendYield', 0) * 100)}%"),
+                        ("Recommendation", info.get("recommendationKey", "N/A").capitalize()),
+                    ]
+                    st.table(pd.DataFrame(biz_metrics, columns=["Business Metrics", "Value"]))
+
             except Exception as e:
                 st.error(f"An error occurred: {e}")
 
 # Tab 2: Economic Calendar
 with tab2:
     st.markdown("### Economic Calendar")
-    st.write("This section can include details like upcoming economic events, indicators, and reports.")
+    st.write("This section includes details like upcoming economic events, indicators, and reports.")
     
     # Example: Placeholder for Economic Calendar data
     calendar_data = [
